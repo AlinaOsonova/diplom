@@ -29,6 +29,7 @@ import org.hamcrest.Matcher;
 
 import java.util.Collection;
 
+import io.qameta.allure.kotlin.Allure;
 import ru.iteco.fmhandroid.R;
 import ru.iteco.fmhandroid.ui.utils.WaitAction;
 
@@ -61,33 +62,39 @@ public class LoginPage {
     }
 
     public void verifyScreenIsDisplayed() {
+        Allure.step("Проверка отображения экрана авторизации");
         onView(withHint(INPUT_LOGIN)).check(matches(isDisplayed()));
         onView(withHint(INPUT_PASSWORD)).check(matches(isDisplayed()));
         onView(withId(SUBMIT_BUTTON_SIGN_IN)).check(matches(isDisplayed()));
     }
 
     public LoginPage enterLogin(String login) {
+        Allure.step("Ввод логина: " + login);
         onView(withHint(INPUT_LOGIN))
                 .perform(click(), replaceText(login), closeSoftKeyboard());
         return this;
     }
 
     public LoginPage enterPassword(String password) {
+        Allure.step("Ввод пароля");
         onView(withHint(INPUT_PASSWORD))
                 .perform(click(), replaceText(password), closeSoftKeyboard());
         return this;
     }
 
     public void clickSignIn() {
+        Allure.step("Нажатие кнопки входа");
         onView(withId(SUBMIT_BUTTON_SIGN_IN)).perform(click());
     }
 
     public void verifySuccessfulLogin() {
+        Allure.step("Проверка успешного входа");
         onView(isRoot()).perform(WaitAction.waitDisplayed(R.id.container_list_news_include_on_fragment_main, WaitAction.TIMEOUT));
         onView(withId(R.id.container_list_news_include_on_fragment_main)).check(matches(isDisplayed()));
     }
 
     public void verifyAlertMessage(String expectedMessage) {
+        Allure.step("Проверка сообщения об ошибке: " + expectedMessage);
         onView(withText(expectedMessage))
                 .inRoot(withDecorView(not(is(getCurrentActivityDecorView()))))
                 .check(matches(isDisplayed()));
@@ -107,11 +114,13 @@ public class LoginPage {
     }
 
     public void verifyLoginFieldLength(int maxLength) {
+        Allure.step("Проверка ограничения длины поля логина: " + maxLength);
         onView(withHint("Login"))
                 .perform(withTextLengthLessThanOrEqualTo(maxLength));
     }
 
     public void verifyPasswordFieldLength(int maxLength) {
+        Allure.step("Проверка ограничения длины поля пароля: " + maxLength);
         onView(withHint("Password"))
                 .perform(withTextLengthLessThanOrEqualTo(maxLength));
     }

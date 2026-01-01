@@ -16,6 +16,7 @@ import androidx.test.espresso.ViewInteraction;
 
 import org.hamcrest.Matcher;
 
+import io.qameta.allure.kotlin.Allure;
 import ru.iteco.fmhandroid.R;
 import ru.iteco.fmhandroid.ui.utils.WaitAction;
 
@@ -25,6 +26,7 @@ public class QuotesPage {
     private final ViewInteraction quotesList = onView(withId(R.id.our_mission_item_list_recycler_view));
 
     public QuotesPage verifyScreenIsDisplayed() {
+        Allure.step("Проверка отображения страницы цитат");
         onView(isRoot()).perform(WaitAction.waitDisplayed(R.id.our_mission_title_text_view, WaitAction.TIMEOUT));
         pageTitle.check(matches(isDisplayed()));
         quotesList.check(matches(isDisplayed()));
@@ -32,12 +34,14 @@ public class QuotesPage {
     }
 
     public QuotesPage openFirstQuoteCard() {
+        Allure.step("Открытие первой карточки цитаты");
         quotesList.perform(actionOnItemAtPosition(0, click()));
         onView(isRoot()).perform(WaitAction.waitDisplayed(R.id.our_mission_item_description_text_view, WaitAction.TIMEOUT_SHORT));
         return this;
     }
 
     public QuotesPage verifyQuoteDescriptionIsDisplayed() {
+        Allure.step("Проверка отображения описания цитаты");
         quotesList.perform(actionOnItemAtPosition(0, new ViewAction() {
             @Override
             public String getDescription() {

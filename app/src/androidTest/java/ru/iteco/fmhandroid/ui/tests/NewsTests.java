@@ -1,8 +1,12 @@
 package ru.iteco.fmhandroid.ui.tests;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
+import androidx.test.espresso.NoMatchingViewException;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.filters.LargeTest;
 
@@ -20,6 +24,8 @@ import ru.iteco.fmhandroid.ui.pages.FilterNewsPage;
 import ru.iteco.fmhandroid.ui.pages.LoginPage;
 import ru.iteco.fmhandroid.ui.pages.MainPage;
 import ru.iteco.fmhandroid.ui.pages.NewsPage;
+import ru.iteco.fmhandroid.ui.utils.TestConstants;
+import ru.iteco.fmhandroid.ui.utils.TestData;
 import ru.iteco.fmhandroid.ui.utils.WaitAction;
 
 @LargeTest
@@ -39,8 +45,8 @@ public class NewsTests {
             onView(isRoot()).perform(WaitAction.waitDisplayed(R.id.login_text_input_layout, WaitAction.TIMEOUT));
             LoginPage loginPage = new LoginPage();
             loginPage
-                    .enterLogin("login2")
-                    .enterPassword("password2")
+                    .enterLogin(TestData.getValidLogin())
+                    .enterPassword(TestData.getValidPassword())
                     .clickSignIn();
             loginPage.verifySuccessfulLogin();
         } catch (RuntimeException ignored) {
@@ -75,18 +81,21 @@ public class NewsTests {
     @Test
     @DisplayName("Тест-кейс 31: Создание новости с валидными данными")
     public void testCreateNewsWithValidData() {
+        String newsTitle = TestData.getTestNewsTitle();
         mainPage.goToNewsPage();
         newsPage.goToControlPanel();
         newsPage.clickAddNewsButton();
         CreateEditNewsPage createPage = new CreateEditNewsPage();
-        createPage.enterCategory("Объявление");
-        createPage.enterTitle("Test Title");
-        createPage.enterDescription("Test Description");
+        createPage.enterCategory(TestData.getTestNewsCategory());
+        createPage.enterTitle(newsTitle);
+        createPage.enterDescription(TestData.getTestNewsDescription());
         java.util.Calendar cal = java.util.Calendar.getInstance();
         cal.add(java.util.Calendar.DAY_OF_MONTH, 1);
         createPage.selectPublishDate();
         createPage.selectPublishTime();
         createPage.clickSaveButton();
+        newsPage.checkListNewsOnControlPanel();
+        newsPage.verifyNewsInListAfterCreation(activityRule);
     }
 
     @Test
@@ -96,8 +105,8 @@ public class NewsTests {
         newsPage.goToControlPanel();
         newsPage.clickAddNewsButton();
         CreateEditNewsPage createPage = new CreateEditNewsPage();
-        createPage.enterCategory("Объявление");
-        createPage.enterDescription("Test Description");
+        createPage.enterCategory(TestData.getTestNewsCategory());
+        createPage.enterDescription(TestData.getTestNewsDescription());
         java.util.Calendar cal = java.util.Calendar.getInstance();
         cal.add(java.util.Calendar.DAY_OF_MONTH, 1);
         createPage.selectPublishDate();
@@ -113,8 +122,8 @@ public class NewsTests {
         newsPage.goToControlPanel();
         newsPage.clickAddNewsButton();
         CreateEditNewsPage createPage = new CreateEditNewsPage();
-        createPage.enterCategory("Объявление");
-        createPage.enterTitle("Test Title");
+        createPage.enterCategory(TestData.getTestNewsCategory());
+        createPage.enterTitle(TestData.getTestNewsTitle());
         java.util.Calendar cal = java.util.Calendar.getInstance();
         cal.add(java.util.Calendar.DAY_OF_MONTH, 1);
         createPage.selectPublishDate();
@@ -126,52 +135,61 @@ public class NewsTests {
     @Test
     @DisplayName("Тест-кейс 34: Создание новости с латиницей в заголовке")
     public void testCreateNewsWithLatinTitle() {
+        String newsTitle = "Test Title Latin";
         mainPage.goToNewsPage();
         newsPage.goToControlPanel();
         newsPage.clickAddNewsButton();
         CreateEditNewsPage createPage = new CreateEditNewsPage();
-        createPage.enterCategory("Объявление");
-        createPage.enterTitle("Test Title Latin");
-        createPage.enterDescription("Test Description");
+        createPage.enterCategory(TestData.getTestNewsCategory());
+        createPage.enterTitle(newsTitle);
+        createPage.enterDescription(TestData.getTestNewsDescription());
         java.util.Calendar cal = java.util.Calendar.getInstance();
         cal.add(java.util.Calendar.DAY_OF_MONTH, 1);
         createPage.selectPublishDate();
         createPage.selectPublishTime();
         createPage.clickSaveButton();
+        newsPage.checkListNewsOnControlPanel();
+        newsPage.verifyNewsInListAfterCreation(activityRule);
     }
 
     @Test
     @DisplayName("Тест-кейс 35: Создание новости с цифрами в заголовке")
     public void testCreateNewsWithNumbersTitle() {
+        String newsTitle = "123456";
         mainPage.goToNewsPage();
         newsPage.goToControlPanel();
         newsPage.clickAddNewsButton();
         CreateEditNewsPage createPage = new CreateEditNewsPage();
-        createPage.enterCategory("Объявление");
-        createPage.enterTitle("123456");
-        createPage.enterDescription("Test Description");
+        createPage.enterCategory(TestData.getTestNewsCategory());
+        createPage.enterTitle(newsTitle);
+        createPage.enterDescription(TestData.getTestNewsDescription());
         java.util.Calendar cal = java.util.Calendar.getInstance();
         cal.add(java.util.Calendar.DAY_OF_MONTH, 1);
         createPage.selectPublishDate();
         createPage.selectPublishTime();
         createPage.clickSaveButton();
+        newsPage.checkListNewsOnControlPanel();
+        newsPage.verifyNewsInListAfterCreation(activityRule);
     }
 
     @Test
     @DisplayName("Тест-кейс 36: Создание новости с кириллицей в заголовке")
     public void testCreateNewsWithCyrillicTitle() {
+        String newsTitle = "Тестовый заголовок";
         mainPage.goToNewsPage();
         newsPage.goToControlPanel();
         newsPage.clickAddNewsButton();
         CreateEditNewsPage createPage = new CreateEditNewsPage();
-        createPage.enterCategory("Объявление");
-        createPage.enterTitle("Тестовый заголовок");
-        createPage.enterDescription("Test Description");
+        createPage.enterCategory(TestData.getTestNewsCategory());
+        createPage.enterTitle(newsTitle);
+        createPage.enterDescription(TestData.getTestNewsDescription());
         java.util.Calendar cal = java.util.Calendar.getInstance();
         cal.add(java.util.Calendar.DAY_OF_MONTH, 1);
         createPage.selectPublishDate();
         createPage.selectPublishTime();
         createPage.clickSaveButton();
+        newsPage.checkListNewsOnControlPanel();
+        newsPage.verifyNewsInListAfterCreation(activityRule);
     }
 
     @Test
@@ -181,13 +199,13 @@ public class NewsTests {
         newsPage.goToControlPanel();
         newsPage.clickAddNewsButton();
         CreateEditNewsPage createPage = new CreateEditNewsPage();
-        createPage.enterCategory("Объявление");
+        createPage.enterCategory(TestData.getTestNewsCategory());
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 1001; i++) {
             sb.append("a");
         }
         createPage.enterTitle(sb.toString());
-        createPage.enterDescription("Test Description");
+        createPage.enterDescription(TestData.getTestNewsDescription());
         java.util.Calendar cal = java.util.Calendar.getInstance();
         cal.add(java.util.Calendar.DAY_OF_MONTH, 1);
         createPage.selectPublishDate();
@@ -198,69 +216,81 @@ public class NewsTests {
     @Test
     @DisplayName("Тест-кейс 38: Создание новости с латиницей в описании")
     public void testCreateNewsWithLatinDescription() {
+        String newsTitle = TestData.getTestNewsTitle();
         mainPage.goToNewsPage();
         newsPage.goToControlPanel();
         newsPage.clickAddNewsButton();
         CreateEditNewsPage createPage = new CreateEditNewsPage();
-        createPage.enterCategory("Объявление");
-        createPage.enterTitle("Test Title");
+        createPage.enterCategory(TestData.getTestNewsCategory());
+        createPage.enterTitle(newsTitle);
         createPage.enterDescription("Test Description Latin");
         java.util.Calendar cal = java.util.Calendar.getInstance();
         cal.add(java.util.Calendar.DAY_OF_MONTH, 1);
         createPage.selectPublishDate();
         createPage.selectPublishTime();
         createPage.clickSaveButton();
+        newsPage.checkListNewsOnControlPanel();
+        newsPage.verifyNewsInListAfterCreation(activityRule);
     }
 
     @Test
     @DisplayName("Тест-кейс 39: Создание новости с кириллицей в описании")
     public void testCreateNewsWithCyrillicDescription() {
+        String newsTitle = TestData.getTestNewsTitle();
         mainPage.goToNewsPage();
         newsPage.goToControlPanel();
         newsPage.clickAddNewsButton();
         CreateEditNewsPage createPage = new CreateEditNewsPage();
-        createPage.enterCategory("Объявление");
-        createPage.enterTitle("Test Title");
+        createPage.enterCategory(TestData.getTestNewsCategory());
+        createPage.enterTitle(newsTitle);
         createPage.enterDescription("Тестовое описание");
         java.util.Calendar cal = java.util.Calendar.getInstance();
         cal.add(java.util.Calendar.DAY_OF_MONTH, 1);
         createPage.selectPublishDate();
         createPage.selectPublishTime();
         createPage.clickSaveButton();
+        newsPage.checkListNewsOnControlPanel();
+        newsPage.verifyNewsInListAfterCreation(activityRule);
     }
 
     @Test
     @DisplayName("Тест-кейс 40: Создание новости с цифрами в описании")
     public void testCreateNewsWithNumbersDescription() {
+        String newsTitle = TestData.getTestNewsTitle();
         mainPage.goToNewsPage();
         newsPage.goToControlPanel();
         newsPage.clickAddNewsButton();
         CreateEditNewsPage createPage = new CreateEditNewsPage();
-        createPage.enterCategory("Объявление");
-        createPage.enterTitle("Test Title");
+        createPage.enterCategory(TestData.getTestNewsCategory());
+        createPage.enterTitle(newsTitle);
         createPage.enterDescription("123456");
         java.util.Calendar cal = java.util.Calendar.getInstance();
         cal.add(java.util.Calendar.DAY_OF_MONTH, 1);
         createPage.selectPublishDate();
         createPage.selectPublishTime();
         createPage.clickSaveButton();
+        newsPage.checkListNewsOnControlPanel();
+        newsPage.verifyNewsInListAfterCreation(activityRule);
     }
 
     @Test
     @DisplayName("Тест-кейс 41: Создание новости со спецсимволами в описании")
     public void testCreateNewsWithSpecialCharsDescription() {
+        String newsTitle = TestData.getTestNewsTitle();
         mainPage.goToNewsPage();
         newsPage.goToControlPanel();
         newsPage.clickAddNewsButton();
         CreateEditNewsPage createPage = new CreateEditNewsPage();
-        createPage.enterCategory("Объявление");
-        createPage.enterTitle("Test Title");
+        createPage.enterCategory(TestData.getTestNewsCategory());
+        createPage.enterTitle(newsTitle);
         createPage.enterDescription("!@#$%^&*()");
         java.util.Calendar cal = java.util.Calendar.getInstance();
         cal.add(java.util.Calendar.DAY_OF_MONTH, 1);
         createPage.selectPublishDate();
         createPage.selectPublishTime();
         createPage.clickSaveButton();
+        newsPage.checkListNewsOnControlPanel();
+        newsPage.verifyNewsInListAfterCreation(activityRule);
     }
 
     @Test
@@ -270,8 +300,8 @@ public class NewsTests {
         newsPage.goToControlPanel();
         newsPage.clickAddNewsButton();
         CreateEditNewsPage createPage = new CreateEditNewsPage();
-        createPage.enterCategory("Объявление");
-        createPage.enterTitle("Test Title");
+        createPage.enterCategory(TestData.getTestNewsCategory());
+        createPage.enterTitle(TestData.getTestNewsTitle());
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 1001; i++) {
             sb.append("a");
@@ -292,7 +322,7 @@ public class NewsTests {
         newsPage.goToControlPanel();
         newsPage.clickAddNewsButton();
         CreateEditNewsPage createPage = new CreateEditNewsPage();
-        createPage.enterTitle("Test Title");
+        createPage.enterTitle(TestData.getTestNewsTitle());
         createPage.clickCancelButton();
     }
 
@@ -324,7 +354,7 @@ public class NewsTests {
         newsPage.goToControlPanel();
         newsPage.clickFilterButton();
         FilterNewsPage filterPage = new FilterNewsPage();
-        filterPage.selectCategory("Объявление");
+        filterPage.selectCategory(TestData.getTestNewsCategory());
         filterPage.clickFilterButton();
     }
 

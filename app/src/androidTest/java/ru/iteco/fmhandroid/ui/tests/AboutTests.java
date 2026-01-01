@@ -1,8 +1,12 @@
 package ru.iteco.fmhandroid.ui.tests;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
+import androidx.test.espresso.NoMatchingViewException;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.filters.LargeTest;
 
@@ -18,6 +22,7 @@ import ru.iteco.fmhandroid.ui.AppActivity;
 import ru.iteco.fmhandroid.ui.pages.AboutPage;
 import ru.iteco.fmhandroid.ui.pages.LoginPage;
 import ru.iteco.fmhandroid.ui.pages.MainPage;
+import ru.iteco.fmhandroid.ui.utils.TestData;
 import ru.iteco.fmhandroid.ui.utils.WaitAction;
 
 @LargeTest
@@ -36,8 +41,8 @@ public class AboutTests {
             onView(isRoot()).perform(WaitAction.waitDisplayed(R.id.login_text_input_layout, WaitAction.TIMEOUT));
             LoginPage loginPage = new LoginPage();
             loginPage
-                    .enterLogin("login2")
-                    .enterPassword("password2")
+                    .enterLogin(TestData.getValidLogin())
+                    .enterPassword(TestData.getValidPassword())
                     .clickSignIn();
             loginPage.verifySuccessfulLogin();
         } catch (RuntimeException ignored) {
